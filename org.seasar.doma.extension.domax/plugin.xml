@@ -15,31 +15,6 @@
       </page>
    </extension>
    <extension
-         id="sqlFileBuilder"
-         name="Domax Project SqlFile Builder"
-         point="org.eclipse.core.resources.builders">
-      <builder
-            callOnEmptyDelta="true"
-            hasNature="true">
-         <run
-               class="org.seasar.doma.extension.domax.builder.SqlFileBuilder">
-         </run>
-      </builder>
-   </extension>
-   <extension
-         id="domaxNature"
-         name="Domax Project Nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.seasar.doma.extension.domax.DomaxNature">
-         </run>
-      </runtime>
-      <builder
-            id="org.seasar.doma.extension.domax.sqlFileBuilder">
-      </builder>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.seasar.doma.extension.domax.category"
