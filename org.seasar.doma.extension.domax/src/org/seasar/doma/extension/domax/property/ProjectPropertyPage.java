@@ -1,13 +1,11 @@
 package org.seasar.doma.extension.domax.property;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.seasar.doma.extension.domax.DomaxNullPointerException;
 
 public class ProjectPropertyPage extends PropertyPage {
 
@@ -31,20 +29,20 @@ public class ProjectPropertyPage extends PropertyPage {
 		return composite;
 	}
 
-	private Composite createDefaultComposite(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		composite.setLayout(layout);
-
-		GridData data = new GridData();
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		data.horizontalSpan = 2;
-		composite.setLayoutData(data);
-
-		return composite;
-	}
+	// private Composite createDefaultComposite(Composite parent) {
+	// Composite composite = new Composite(parent, SWT.NULL);
+	// GridLayout layout = new GridLayout();
+	// layout.numColumns = 1;
+	// composite.setLayout(layout);
+	//
+	// GridData data = new GridData();
+	// data.verticalAlignment = GridData.FILL;
+	// data.horizontalAlignment = GridData.FILL;
+	// data.horizontalSpan = 2;
+	// composite.setLayoutData(data);
+	//
+	// return composite;
+	// }
 
 	@Override
 	protected void performDefaults() {
@@ -55,11 +53,11 @@ public class ProjectPropertyPage extends PropertyPage {
 		return true;
 	}
 
-	private IProject getProject() {
-		IProject project = (IProject) getElement().getAdapter(IProject.class);
-		if (project == null) {
-			throw new DomaxNullPointerException("project");
-		}
-		return project;
-	}
+	// private IProject getProject() {
+	// IProject project = (IProject) getElement().getAdapter(IProject.class);
+	// if (project == null) {
+	// AssertionUtil.assertNotNull(project);
+	// }
+	// return project;
+	// }
 }
