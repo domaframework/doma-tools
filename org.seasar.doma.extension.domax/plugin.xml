@@ -8,17 +8,9 @@
             id="org.seasar.doma.extension.domax.properties.samplePropertyPage"
             name="Doma">
          <enabledWhen>
-            <and>
-               <adapt
-                     type="org.eclipse.core.resources.IProject">
-               </adapt>
-               <instanceof
-                     value="org.eclipse.jdt.core.IJavaProject">
-               </instanceof>
-               <count
-                     value="1">
-               </count>
-            </and>
+            <instanceof
+                  value="org.eclipse.jdt.core.IJavaProject">
+            </instanceof>
          </enabledWhen>
       </page>
    </extension>
@@ -46,17 +38,6 @@
       <builder
             id="org.seasar.doma.extension.domax.sqlFileBuilder">
       </builder>
-   </extension>
-   <extension
-         id="xmlProblem"
-         name="XML Problem"
-         point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
-      <persistent
-            value="true">
-      </persistent>
    </extension>
    <extension
          point="org.eclipse.ui.commands">

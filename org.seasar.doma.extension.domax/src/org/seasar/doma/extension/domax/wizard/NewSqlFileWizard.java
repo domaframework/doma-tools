@@ -15,6 +15,7 @@
  */
 package org.seasar.doma.extension.domax.wizard;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -32,11 +33,17 @@ public class NewSqlFileWizard extends Wizard implements INewWizard {
 
 	private WizardNewFileCreationPage page;
 
-	private IFile sqlFile;
+	private IContainer candidateContainer;
 
-	public NewSqlFileWizard(IFile sqlFile) {
-		AssertionUtil.assertNotNull(sqlFile);
-		this.sqlFile = sqlFile;
+	private String candidatelFileName;
+
+	private IFile newFile;
+
+	public NewSqlFileWizard(IContainer candidateContainer,
+			String candidatelFileName) {
+		AssertionUtil.assertNotNull(candidateContainer, candidatelFileName);
+		this.candidateContainer = candidateContainer;
+		this.candidatelFileName = candidatelFileName;
 	}
 
 	@Override
@@ -45,16 +52,22 @@ public class NewSqlFileWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		page.createNewFile();
+		newFile = page.createNewFile();
 		return true;
 	}
 
 	@Override
 	public void addPages() {
 		page = new WizardNewFileCreationPage("SqlFileCreate",
-				new StructuredSelection(sqlFile));
-		page.setFileName(sqlFile.getName());
+				new StructuredSelection(candidateContainer));
+		page.setFileName(candidatelFileName);
+		page.setTitle("New SQL File");
+		page.setDescription("SQLファイルを作成します。");
 		addPage(page);
+	}
+
+	public IFile getNewFile() {
+		return newFile;
 	}
 
 }

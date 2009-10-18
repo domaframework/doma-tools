@@ -15,19 +15,16 @@
  */
 package org.seasar.doma.extension.domax.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.seasar.doma.extension.domax.Constants;
-import org.seasar.doma.extension.domax.Logger;
 import org.seasar.doma.extension.domax.util.AssertionUtil;
+import org.seasar.doma.extension.domax.util.JavaProjectUtil;
 
 /**
  * @author taedium
@@ -42,7 +39,8 @@ public class DaoMethodFactory {
 		if (javaProject == null) {
 			return null;
 		}
-		List<IResource> sourceFolders = getSourceFolders(javaProject);
+		List<IResource> sourceFolders = JavaProjectUtil
+				.getSourceFolders(javaProject);
 		IPath sqlFilePath = sqlFile.getProjectRelativePath();
 		for (IResource sourceFolder : sourceFolders) {
 			IPath metaInfPath = sourceFolder.getProjectRelativePath().append(
@@ -66,18 +64,4 @@ public class DaoMethodFactory {
 		return null;
 	}
 
-	protected List<IResource> getSourceFolders(IJavaProject javaProject) {
-		List<IResource> results = new ArrayList<IResource>();
-		try {
-			for (IPackageFragmentRoot root : javaProject
-					.getPackageFragmentRoots()) {
-				if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
-					results.add(root.getCorrespondingResource());
-				}
-			}
-		} catch (JavaModelException e) {
-			Logger.error(e);
-		}
-		return results;
-	}
 }

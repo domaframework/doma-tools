@@ -1,8 +1,5 @@
 package org.seasar.doma.extension.domax.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -18,13 +15,11 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -35,7 +30,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
 import org.seasar.doma.extension.domax.Constants;
 import org.seasar.doma.extension.domax.Logger;
-import org.seasar.doma.extension.domax.wizard.NewSqlFileWizard;
+import org.seasar.doma.extension.domax.util.JavaProjectUtil;
+import org.seasar.doma.extension.domax.wizard.NewSqlFileWizardDialogOpener;
 
 public class JavaEditorToSqlEditorHandler extends AbstractHandler {
 
@@ -60,7 +56,7 @@ public class JavaEditorToSqlEditorHandler extends AbstractHandler {
 		if (selectedJavaElement == null) {
 			return null;
 		}
-		openSqlFileFromJavaElement(selectedJavaElement, shell);
+		openSqlFile(selectedJavaElement, shell);
 		return null;
 	}
 
@@ -90,20 +86,19 @@ public class JavaEditorToSqlEditorHandler extends AbstractHandler {
 		}
 	}
 
-	protected void openSqlFileFromJavaElement(IJavaElement javaElement,
-			Shell shell) {
+	protected void openSqlFile(IJavaElement javaElement, Shell shell) {
 		IMethod method = (IMethod) javaElement.getAdapter(IMethod.class);
 		if (method != null) {
-			openSqlFileFromMethod(method, shell);
+			openSqlFile(method, shell);
 		} else {
 			IType type = (IType) javaElement.getAdapter(IType.class);
 			if (type != null) {
-				openSqlFileFromType(type);
+				openSqlFile(type);
 			}
 		}
 	}
 
-	protected void openSqlFileFromMethod(IMethod method, Shell shell) {
+	protected void openSqlFile(IMethod method, Shell shell) {
 		IType type = (IType) method.getParent();
 		if (type == null) {
 			return;
@@ -118,11 +113,19 @@ public class JavaEditorToSqlEditorHandler extends AbstractHandler {
 		if (sqlFile != null) {
 			openSqlFile(sqlFile);
 		} else {
-			sqlFile = createSqlFile(javaProject, className, methodName);
-			WizardDialog dialog = new WizardDialog(shell, new NewSqlFileWizard(
-					sqlFile));
-			dialog.open();
+			sqlFile = createSqlFileWithWizard(javaProject, className,
+					methodName, shell);
+			if (sqlFile != null) {
+				openSqlFile(sqlFile);
+			}
 		}
+	}
+
+	protected IFile createSqlFileWithWizard(IJavaProject javaProject,
+			String className, String methodName, Shell shell) {
+		NewSqlFileWizardDialogOpener opener = new NewSqlFileWizardDialogOpener(
+				javaProject, className, methodName, shell);
+		return opener.open();
 	}
 
 	protected IFile findSqlFile(IJavaProject javaProject, String className,
@@ -130,7 +133,8 @@ public class JavaEditorToSqlEditorHandler extends AbstractHandler {
 		IProject project = javaProject.getProject();
 		IPath path = Path.fromPortableString(className.replace(".", "/"))
 				.append(methodName);
-		for (IResource sourceFolder : getSourceFolders(javaProject)) {
+		for (IResource sourceFolder : JavaProjectUtil
+				.getSourceFolders(javaProject)) {
 			IPath sqlFilePath = sourceFolder.getProjectRelativePath().append(
 					Constants.META_INF).append(path).addFileExtension(
 					Constants.SQL_FILE_EXTESION);
@@ -142,34 +146,7 @@ public class JavaEditorToSqlEditorHandler extends AbstractHandler {
 		return null;
 	}
 
-	protected IFile createSqlFile(IJavaProject javaProject, String className,
-			String methodName) {
-		IProject project = javaProject.getProject();
-		for (IResource sourceFolder : getSourceFolders(javaProject)) {
-			IPath metaInfFolderPath = sourceFolder.getProjectRelativePath()
-					.append(Constants.META_INF);
-			IFolder metaInfFolder = project.getFolder(metaInfFolderPath);
-			if (!metaInfFolder.exists()) {
-				continue;
-			}
-			IPath sqlFilePath = metaInfFolderPath.append(
-					className.replace(".", "/")).append(methodName)
-					.addFileExtension(Constants.SQL_FILE_EXTESION);
-			return project.getFile(sqlFilePath);
-		}
-		for (IResource sourceFolder : getSourceFolders(javaProject)) {
-			IPath metaInfFolderPath = sourceFolder.getProjectRelativePath()
-					.append(Constants.META_INF);
-			IPath sqlFilePath = metaInfFolderPath.append(
-					className.replace(".", "/")).append(methodName)
-					.addFileExtension(Constants.SQL_FILE_EXTESION);
-			return project.getFile(sqlFilePath);
-		}
-		// TODO
-		return null;
-	}
-
-	protected void openSqlFileFromType(IType type) {
+	protected void openSqlFile(IType type) {
 		if (!isDaoAnnotationExistent(type)) {
 			return;
 		}
@@ -193,7 +170,8 @@ public class JavaEditorToSqlEditorHandler extends AbstractHandler {
 	protected IFolder findSqlFolder(IJavaProject javaProject, String className) {
 		IProject project = javaProject.getProject();
 		IPath path = Path.fromPortableString(className.replace(".", "/"));
-		for (IResource sourceFolder : getSourceFolders(javaProject)) {
+		for (IResource sourceFolder : JavaProjectUtil
+				.getSourceFolders(javaProject)) {
 			IPath sqlFolderPath = sourceFolder.getProjectRelativePath().append(
 					Constants.META_INF).append(path);
 			IFolder sqlFolder = project.getFolder(sqlFolderPath);
@@ -202,21 +180,6 @@ public class JavaEditorToSqlEditorHandler extends AbstractHandler {
 			}
 		}
 		return null;
-	}
-
-	protected List<IResource> getSourceFolders(IJavaProject javaProject) {
-		List<IResource> results = new ArrayList<IResource>();
-		try {
-			for (IPackageFragmentRoot root : javaProject
-					.getPackageFragmentRoots()) {
-				if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
-					results.add(root.getCorrespondingResource());
-				}
-			}
-		} catch (JavaModelException e) {
-			Logger.error(e);
-		}
-		return results;
 	}
 
 	protected void openSqlFile(IFile sqlFile) {
