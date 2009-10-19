@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -76,27 +77,26 @@ public class SqlFileChangeListener implements IResourceChangeListener {
 			if (compilationUnit == null) {
 				return;
 			}
-			new Job(daoMethod.getClassName()) {
+
+			WorkspaceJob job = new WorkspaceJob(daoMethod.getClassName()) {
 
 				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						compilationUnit.becomeWorkingCopy(monitor);
-						IBuffer buffer = compilationUnit.getBuffer();
-						buffer.append("");
-						buffer.save(monitor, true);
-						buffer.close();
-						compilationUnit.commitWorkingCopy(true, monitor);
-						sqlFile.getProject().build(
-								IncrementalProjectBuilder.INCREMENTAL_BUILD,
-								monitor);
-						return Status.OK_STATUS;
-					} catch (CoreException e) {
-						Logger.error(e);
-						return new Status(IStatus.ERROR, Domax.PLUGIN_ID, "", e);
-					}
+				public IStatus runInWorkspace(IProgressMonitor monitor)
+						throws CoreException {
+					compilationUnit.becomeWorkingCopy(monitor);
+					IBuffer buffer = compilationUnit.getBuffer();
+					buffer.append("");
+					buffer.save(monitor, true);
+					buffer.close();
+					compilationUnit.commitWorkingCopy(true, monitor);
+					sqlFile.getProject().build(
+							IncrementalProjectBuilder.INCREMENTAL_BUILD,
+							monitor);
+					return Status.OK_STATUS;
 				}
-			}.schedule();
+			};
+			job.setPriority(Job.SHORT);
+			job.schedule();
 		} catch (JavaModelException e) {
 			Logger.error(e);
 		}
