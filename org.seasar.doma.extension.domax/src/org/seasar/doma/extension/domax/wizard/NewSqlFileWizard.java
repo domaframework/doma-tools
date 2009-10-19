@@ -44,6 +44,7 @@ public class NewSqlFileWizard extends Wizard implements INewWizard {
 		AssertionUtil.assertNotNull(candidateContainer, candidatelFileName);
 		this.candidateContainer = candidateContainer;
 		this.candidatelFileName = candidatelFileName;
+		setWindowTitle("New SQL File");
 	}
 
 	@Override
@@ -61,8 +62,8 @@ public class NewSqlFileWizard extends Wizard implements INewWizard {
 		page = new WizardNewFileCreationPage("SqlFileCreate",
 				new StructuredSelection(candidateContainer));
 		page.setFileName(candidatelFileName);
-		page.setTitle("New SQL File");
-		page.setDescription("SQLファイルを作成します。");
+		page.setTitle("SQL File");
+		page.setDescription("Create a new sql file.");
 		addPage(page);
 	}
 

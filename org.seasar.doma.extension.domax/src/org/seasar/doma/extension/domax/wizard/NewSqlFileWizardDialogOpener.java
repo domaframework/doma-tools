@@ -86,8 +86,7 @@ public class NewSqlFileWizardDialogOpener {
 		NewSqlFileWizard newSqlFileWizard = new NewSqlFileWizard(
 				sqlFileContainer, sqlFileName);
 		WizardDialog dialog = new WizardDialog(shell, newSqlFileWizard);
-		int result = dialog.open();
-		if (result == WizardDialog.OK) {
+		if (dialog.open() == WizardDialog.OK) {
 			IFile sqlFile = newSqlFileWizard.getNewFile();
 			if (sqlFile != null) {
 				tryToSaveMetaInfPath(sqlFile);
