@@ -32,36 +32,36 @@ import org.seasar.doma.extension.domax.util.JavaProjectUtil;
  */
 public class DaoMethodFactory {
 
-	public DaoMethod createDaoMethod(IFile sqlFile) {
-		AssertionUtil.assertNotNull(sqlFile);
+    public DaoMethod createDaoMethod(IFile sqlFile) {
+        AssertionUtil.assertNotNull(sqlFile);
 
-		IJavaProject javaProject = JavaCore.create(sqlFile.getProject());
-		if (javaProject == null) {
-			return null;
-		}
-		List<IResource> sourceFolders = JavaProjectUtil
-				.getSourceFolders(javaProject);
-		IPath sqlFilePath = sqlFile.getProjectRelativePath();
-		for (IResource sourceFolder : sourceFolders) {
-			IPath metaInfPath = sourceFolder.getProjectRelativePath().append(
-					Constants.META_INF);
-			if (metaInfPath.isPrefixOf(sqlFilePath)) {
-				IPath path = sqlFilePath.removeFirstSegments(
-						metaInfPath.segmentCount()).removeFileExtension();
-				if (path.segmentCount() < 2) {
-					continue;
-				}
-				String className = path.removeLastSegments(1)
-						.toPortableString().replace("/", ".");
-				String methodName = path.lastSegment();
-				int pos = methodName.indexOf("-");
-				if (pos > 0) {
-					methodName = methodName.substring(0, pos);
-				}
-				return new DaoMethod(javaProject, className, methodName);
-			}
-		}
-		return null;
-	}
+        IJavaProject javaProject = JavaCore.create(sqlFile.getProject());
+        if (javaProject == null) {
+            return null;
+        }
+        List<IResource> sourceFolders = JavaProjectUtil
+                .getSourceFolders(javaProject);
+        IPath sqlFilePath = sqlFile.getProjectRelativePath();
+        for (IResource sourceFolder : sourceFolders) {
+            IPath metaInfPath = sourceFolder.getProjectRelativePath().append(
+                    Constants.META_INF);
+            if (metaInfPath.isPrefixOf(sqlFilePath)) {
+                IPath path = sqlFilePath.removeFirstSegments(
+                        metaInfPath.segmentCount()).removeFileExtension();
+                if (path.segmentCount() < 2) {
+                    continue;
+                }
+                String className = path.removeLastSegments(1)
+                        .toPortableString().replace("/", ".");
+                String methodName = path.lastSegment();
+                int pos = methodName.indexOf("-");
+                if (pos > 0) {
+                    methodName = methodName.substring(0, pos);
+                }
+                return new DaoMethod(javaProject, className, methodName);
+            }
+        }
+        return null;
+    }
 
 }

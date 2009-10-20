@@ -24,81 +24,82 @@ import org.seasar.doma.extension.domax.model.DaoMethodFactory;
 
 public class SqlFileChangeListener implements IResourceChangeListener {
 
-	@Override
-	public void resourceChanged(IResourceChangeEvent event) {
-		if (event.getBuildKind() != IncrementalProjectBuilder.FULL_BUILD
-				&& event.getBuildKind() != IncrementalProjectBuilder.CLEAN_BUILD) {
-			IResourceDelta delta = event.getDelta();
-			if (delta != null) {
-				try {
-					delta.accept(new SqlFileDeltaVisitor());
-				} catch (CoreException e) {
-					Logger.error(e);
-				}
-			}
-		}
-	}
+    @Override
+    public void resourceChanged(IResourceChangeEvent event) {
+        if (event.getBuildKind() != IncrementalProjectBuilder.FULL_BUILD
+                && event.getBuildKind() != IncrementalProjectBuilder.CLEAN_BUILD) {
+            IResourceDelta delta = event.getDelta();
+            if (delta != null) {
+                try {
+                    delta.accept(new SqlFileDeltaVisitor());
+                } catch (CoreException e) {
+                    Logger.error(e);
+                }
+            }
+        }
+    }
 
-	private class SqlFileDeltaVisitor implements IResourceDeltaVisitor {
+    private class SqlFileDeltaVisitor implements IResourceDeltaVisitor {
 
-		public boolean visit(IResourceDelta delta) throws CoreException {
-			IResource resource = delta.getResource();
-			switch (delta.getKind()) {
-			case IResourceDelta.ADDED:
-			case IResourceDelta.REMOVED:
-			case IResourceDelta.CHANGED:
-				checkSqlFile(resource);
-				break;
-			}
-			return true;
-		}
-	}
+        public boolean visit(IResourceDelta delta) throws CoreException {
+            IResource resource = delta.getResource();
+            switch (delta.getKind()) {
+            case IResourceDelta.ADDED:
+            case IResourceDelta.REMOVED:
+            case IResourceDelta.CHANGED:
+                checkSqlFile(resource);
+                break;
+            }
+            return true;
+        }
+    }
 
-	void checkSqlFile(IResource resource) {
-		final IFile sqlFile = (IFile) resource.getAdapter(IFile.class);
-		if (sqlFile == null
-				|| !sqlFile.getFileExtension().equalsIgnoreCase(
-						Constants.SQL_FILE_EXTESION)) {
-			return;
-		}
-		DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
-		DaoMethod daoMethod = daoMethodFactory.createDaoMethod(sqlFile);
-		if (daoMethod == null) {
-			return;
-		}
+    void checkSqlFile(IResource resource) {
+        final IFile sqlFile = (IFile) resource.getAdapter(IFile.class);
+        if (sqlFile == null
+                || !sqlFile.getFileExtension().equalsIgnoreCase(
+                        Constants.SQL_FILE_EXTESION)) {
+            return;
+        }
+        DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
+        DaoMethod daoMethod = daoMethodFactory.createDaoMethod(sqlFile);
+        if (daoMethod == null) {
+            return;
+        }
 
-		IJavaProject javaProject = daoMethod.getJavaProject();
-		try {
-			IType type = javaProject.findType(daoMethod.getClassName());
-			if (type == null) {
-				return;
-			}
-			final ICompilationUnit compilationUnit = type.getCompilationUnit();
-			if (compilationUnit == null) {
-				return;
-			}
+        IJavaProject javaProject = daoMethod.getJavaProject();
+        try {
+            IType type = javaProject.findType(daoMethod.getClassName());
+            if (type == null) {
+                return;
+            }
+            final ICompilationUnit compilationUnit = type.getCompilationUnit();
+            if (compilationUnit == null) {
+                return;
+            }
 
-			WorkspaceJob job = new WorkspaceJob(daoMethod.getClassName()) {
+            WorkspaceJob job = new WorkspaceJob("building "
+                    + daoMethod.getClassName()) {
 
-				@Override
-				public IStatus runInWorkspace(IProgressMonitor monitor)
-						throws CoreException {
-					compilationUnit.becomeWorkingCopy(monitor);
-					IBuffer buffer = compilationUnit.getBuffer();
-					buffer.append("");
-					buffer.save(monitor, true);
-					buffer.close();
-					compilationUnit.commitWorkingCopy(true, monitor);
-					sqlFile.getProject().build(
-							IncrementalProjectBuilder.INCREMENTAL_BUILD,
-							monitor);
-					return Status.OK_STATUS;
-				}
-			};
-			job.setPriority(Job.SHORT);
-			job.schedule();
-		} catch (JavaModelException e) {
-			Logger.error(e);
-		}
-	}
+                @Override
+                public IStatus runInWorkspace(IProgressMonitor monitor)
+                        throws CoreException {
+                    compilationUnit.becomeWorkingCopy(monitor);
+                    IBuffer buffer = compilationUnit.getBuffer();
+                    buffer.append("");
+                    buffer.save(monitor, true);
+                    buffer.close();
+                    compilationUnit.commitWorkingCopy(true, monitor);
+                    sqlFile.getProject().build(
+                            IncrementalProjectBuilder.INCREMENTAL_BUILD,
+                            monitor);
+                    return Status.OK_STATUS;
+                }
+            };
+            job.setPriority(Job.SHORT);
+            job.schedule();
+        } catch (JavaModelException e) {
+            Logger.error(e);
+        }
+    }
 }

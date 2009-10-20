@@ -31,60 +31,60 @@ import org.seasar.doma.extension.domax.util.AssertionUtil;
  */
 public class DaoMethod {
 
-	private final IJavaProject javaProject;
+    private final IJavaProject javaProject;
 
-	private final String className;
+    private final String className;
 
-	private final String methodName;
+    private final String methodName;
 
-	/**
-	 * @param className
-	 * @param methodName
-	 */
-	public DaoMethod(IJavaProject javaProject, String className,
-			String methodName) {
-		AssertionUtil.assertNotNull(javaProject, className, methodName);
-		this.javaProject = javaProject;
-		this.className = className;
-		this.methodName = methodName;
-	}
+    /**
+     * @param className
+     * @param methodName
+     */
+    public DaoMethod(IJavaProject javaProject, String className,
+            String methodName) {
+        AssertionUtil.assertNotNull(javaProject, className, methodName);
+        this.javaProject = javaProject;
+        this.className = className;
+        this.methodName = methodName;
+    }
 
-	public IJavaProject getJavaProject() {
-		return javaProject;
-	}
+    public IJavaProject getJavaProject() {
+        return javaProject;
+    }
 
-	/**
-	 * @return the className
-	 */
-	public String getClassName() {
-		return className;
-	}
+    /**
+     * @return the className
+     */
+    public String getClassName() {
+        return className;
+    }
 
-	/**
-	 * @return the methodName
-	 */
-	public String getMethodName() {
-		return methodName;
-	}
+    /**
+     * @return the methodName
+     */
+    public String getMethodName() {
+        return methodName;
+    }
 
-	public void openInEditor() {
-		try {
-			IType type = javaProject.findType(className);
-			if (type == null) {
-				return;
-			}
-			for (IMethod method : type.getMethods()) {
-				if (method.getElementName().equals(methodName)) {
-					JavaUI.openInEditor(method);
-					return;
-				}
-			}
-			JavaUI.openInEditor(type);
-		} catch (JavaModelException e) {
-			Logger.error(e);
-		} catch (PartInitException e) {
-			Logger.error(e);
-		}
-	}
+    public void openInEditor() {
+        try {
+            IType type = javaProject.findType(className);
+            if (type == null) {
+                return;
+            }
+            for (IMethod method : type.getMethods()) {
+                if (method.getElementName().equals(methodName)) {
+                    JavaUI.openInEditor(method);
+                    return;
+                }
+            }
+            JavaUI.openInEditor(type);
+        } catch (JavaModelException e) {
+            Logger.error(e);
+        } catch (PartInitException e) {
+            Logger.error(e);
+        }
+    }
 
 }

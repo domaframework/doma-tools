@@ -31,44 +31,44 @@ import org.seasar.doma.extension.domax.util.AssertionUtil;
  */
 public class NewSqlFileWizard extends Wizard implements INewWizard {
 
-	private WizardNewFileCreationPage page;
+    private WizardNewFileCreationPage page;
 
-	private IContainer candidateContainer;
+    private IContainer candidateContainer;
 
-	private String candidatelFileName;
+    private String candidatelFileName;
 
-	private IFile newFile;
+    private IFile newFile;
 
-	public NewSqlFileWizard(IContainer candidateContainer,
-			String candidatelFileName) {
-		AssertionUtil.assertNotNull(candidateContainer, candidatelFileName);
-		this.candidateContainer = candidateContainer;
-		this.candidatelFileName = candidatelFileName;
-		setWindowTitle("New SQL File");
-	}
+    public NewSqlFileWizard(IContainer candidateContainer,
+            String candidatelFileName) {
+        AssertionUtil.assertNotNull(candidateContainer, candidatelFileName);
+        this.candidateContainer = candidateContainer;
+        this.candidatelFileName = candidatelFileName;
+        setWindowTitle("New SQL File");
+    }
 
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-	}
+    @Override
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
+    }
 
-	@Override
-	public boolean performFinish() {
-		newFile = page.createNewFile();
-		return true;
-	}
+    @Override
+    public boolean performFinish() {
+        newFile = page.createNewFile();
+        return true;
+    }
 
-	@Override
-	public void addPages() {
-		page = new WizardNewFileCreationPage("SqlFileCreate",
-				new StructuredSelection(candidateContainer));
-		page.setFileName(candidatelFileName);
-		page.setTitle("SQL File");
-		page.setDescription("Create a new sql file.");
-		addPage(page);
-	}
+    @Override
+    public void addPages() {
+        page = new WizardNewFileCreationPage("SqlFileCreate",
+                new StructuredSelection(candidateContainer));
+        page.setFileName(candidatelFileName);
+        page.setTitle("SQL File");
+        page.setDescription("Create a new sql file.");
+        addPage(page);
+    }
 
-	public IFile getNewFile() {
-		return newFile;
-	}
+    public IFile getNewFile() {
+        return newFile;
+    }
 
 }

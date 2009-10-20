@@ -21,15 +21,15 @@ package org.seasar.doma.extension.domax;
  */
 public final class Constants {
 
-	public static final String META_INF = "META-INF";
+    public static final String META_INF = "META-INF";
 
-	public static final String SQL_FILE_EXTESION = "sql";
+    public static final String SQL_FILE_EXTESION = "sql";
 
-	public static final class NewSqlFileDialog {
+    public static final class NewSqlFileDialog {
 
-		public static final String SECTION_NAME = NewSqlFileDialog.class
-				.getName();
+        public static final String SECTION_NAME = NewSqlFileDialog.class
+                .getName();
 
-		public static final String META_INF_PATH_KEY = "meta_inf_path";
-	}
+        public static final String META_INF_PATH_KEY = "meta_inf_path";
+    }
 }

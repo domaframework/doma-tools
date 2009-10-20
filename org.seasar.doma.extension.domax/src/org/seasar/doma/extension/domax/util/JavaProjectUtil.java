@@ -11,18 +11,18 @@ import org.seasar.doma.extension.domax.Logger;
 
 public final class JavaProjectUtil {
 
-	public static List<IResource> getSourceFolders(IJavaProject javaProject) {
-		List<IResource> results = new ArrayList<IResource>();
-		try {
-			for (IPackageFragmentRoot root : javaProject
-					.getPackageFragmentRoots()) {
-				if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
-					results.add(root.getCorrespondingResource());
-				}
-			}
-		} catch (JavaModelException e) {
-			Logger.error(e);
-		}
-		return results;
-	}
+    public static List<IResource> getSourceFolders(IJavaProject javaProject) {
+        List<IResource> results = new ArrayList<IResource>();
+        try {
+            for (IPackageFragmentRoot root : javaProject
+                    .getPackageFragmentRoots()) {
+                if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+                    results.add(root.getCorrespondingResource());
+                }
+            }
+        } catch (JavaModelException e) {
+            Logger.error(e);
+        }
+        return results;
+    }
 }

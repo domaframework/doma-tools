@@ -14,44 +14,44 @@ import org.seasar.doma.extension.domax.model.DaoMethodFactory;
 
 public class SqlEditorToJavaEditorHandler extends AbstractHandler {
 
-	public SqlEditorToJavaEditorHandler() {
-	}
+    public SqlEditorToJavaEditorHandler() {
+    }
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IEditorPart editor = HandlerUtil.getActiveEditor(event);
-		if (editor == null) {
-			return null;
-		}
-		IFile sqlFile = getSqlFile(editor);
-		if (sqlFile == null) {
-			return null;
-		}
-		DaoMethod daoMethod = getDaoMethod(sqlFile);
-		if (daoMethod == null) {
-			return null;
-		}
-		daoMethod.openInEditor();
-		return null;
-	}
+    public Object execute(ExecutionEvent event) throws ExecutionException {
+        IEditorPart editor = HandlerUtil.getActiveEditor(event);
+        if (editor == null) {
+            return null;
+        }
+        IFile sqlFile = getSqlFile(editor);
+        if (sqlFile == null) {
+            return null;
+        }
+        DaoMethod daoMethod = getDaoMethod(sqlFile);
+        if (daoMethod == null) {
+            return null;
+        }
+        daoMethod.openInEditor();
+        return null;
+    }
 
-	protected IFile getSqlFile(IEditorPart editor) {
-		ITextEditor textEditor = (ITextEditor) editor
-				.getAdapter(ITextEditor.class);
-		if (textEditor == null) {
-			return null;
-		}
-		IFile file = (IFile) textEditor.getEditorInput()
-				.getAdapter(IFile.class);
-		if (file == null
-				|| !file.getFileExtension().equals(Constants.SQL_FILE_EXTESION)) {
-			return null;
-		}
-		return file;
-	}
+    protected IFile getSqlFile(IEditorPart editor) {
+        ITextEditor textEditor = (ITextEditor) editor
+                .getAdapter(ITextEditor.class);
+        if (textEditor == null) {
+            return null;
+        }
+        IFile file = (IFile) textEditor.getEditorInput()
+                .getAdapter(IFile.class);
+        if (file == null
+                || !file.getFileExtension().equals(Constants.SQL_FILE_EXTESION)) {
+            return null;
+        }
+        return file;
+    }
 
-	protected DaoMethod getDaoMethod(IFile sqlFile) {
-		DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
-		return daoMethodFactory.createDaoMethod(sqlFile);
-	}
+    protected DaoMethod getDaoMethod(IFile sqlFile) {
+        DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
+        return daoMethodFactory.createDaoMethod(sqlFile);
+    }
 
 }
