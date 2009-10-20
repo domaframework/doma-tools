@@ -30,6 +30,6 @@ public final class Constants {
         public static final String SECTION_NAME = NewSqlFileDialog.class
                 .getName();
 
-        public static final String META_INF_PATH_KEY = "meta_inf_path";
+        public static final String SOURCE_FOLDER_PATH_KEY = "source_folder_path";
     }
 }

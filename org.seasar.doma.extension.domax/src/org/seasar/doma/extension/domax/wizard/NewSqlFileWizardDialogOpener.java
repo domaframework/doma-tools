@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -33,7 +34,7 @@ public class NewSqlFileWizardDialogOpener {
 
     private final Shell shell;
 
-    private final String metaInfPath;
+    private final String sourceFolderPath;
 
     public NewSqlFileWizardDialogOpener(IJavaProject javaProject,
             String className, String methodName, Shell shell) {
@@ -42,43 +43,48 @@ public class NewSqlFileWizardDialogOpener {
         this.className = className;
         this.methodName = methodName;
         this.shell = shell;
-        String metaInfPath = getMetaInfPath();
-        if (metaInfPath == null) {
-            metaInfPath = findMetaInfPath(javaProject, className);
+        String sourceFolderPath = getSourceFolderPath();
+        if (sourceFolderPath == null) {
+            sourceFolderPath = findSourceFolderPath(javaProject, className);
         }
-        this.metaInfPath = metaInfPath;
+        this.sourceFolderPath = sourceFolderPath;
     }
 
-    protected String findMetaInfPath(IJavaProject javaProject, String className) {
+    protected String findSourceFolderPath(IJavaProject javaProject,
+            String className) {
         IProject project = javaProject.getProject();
         List<IResource> sourceFolders = JavaProjectUtil
                 .getSourceFolders(javaProject);
         for (IResource sourceFolder : sourceFolders) {
-            IPath metaInfFolderPath = sourceFolder.getProjectRelativePath()
-                    .append(Constants.META_INF);
-            IFolder sqlFolder = project.getFolder(metaInfFolderPath
-                    .append(className.replace(".", "/")));
+            IPath sourceFolderPath = sourceFolder.getProjectRelativePath();
+            IFolder sqlFolder = project.getFolder(sourceFolderPath.append(
+                    Constants.META_INF).append(className.replace(".", "/")));
             if (sqlFolder.exists()) {
-                return metaInfFolderPath.toPortableString();
+                return sourceFolderPath.toPortableString();
             }
         }
         for (IResource sourceFolder : sourceFolders) {
-            IPath metaInfFolderPath = sourceFolder.getProjectRelativePath()
-                    .append(Constants.META_INF);
-            IFolder metaInfFolder = project.getFolder(metaInfFolderPath);
+            IPath sourceFolderPath = sourceFolder.getProjectRelativePath();
+            IFolder metaInfFolder = project.getFolder(sourceFolder
+                    .getProjectRelativePath().append(Constants.META_INF));
             if (metaInfFolder.exists()) {
-                return metaInfFolderPath.toPortableString();
+                return sourceFolderPath.toPortableString();
+            }
+        }
+        for (IResource sourceFolder : sourceFolders) {
+            if (sourceFolder.exists()) {
+                return sourceFolder.getProjectRelativePath().toPortableString();
             }
         }
         return null;
     }
 
     public IFile open() {
-        if (metaInfPath == null) {
+        if (sourceFolderPath == null) {
             IStatus status = new Status(IStatus.ERROR, Domax.PLUGIN_ID,
-                    "META-INF not found in source folder.");
-            ErrorDialog.openError(shell, "META-INF not found.",
-                    "META-INF not found in source folder.", status);
+                    "source folder is not found.");
+            ErrorDialog.openError(shell, "source folder is not found.",
+                    "source folder is not found.", status);
             return null;
         }
         IContainer sqlFileContainer = createSqlFileContainer();
@@ -89,7 +95,7 @@ public class NewSqlFileWizardDialogOpener {
         if (dialog.open() == WizardDialog.OK) {
             IFile sqlFile = newSqlFileWizard.getNewFile();
             if (sqlFile != null) {
-                tryToSaveMetaInfPath(sqlFile);
+                tryToSaveSourceFolderPath(sqlFile);
                 return sqlFile;
             }
         }
@@ -98,9 +104,9 @@ public class NewSqlFileWizardDialogOpener {
 
     protected IContainer createSqlFileContainer() {
         IProject project = javaProject.getProject();
-        IFolder metaInfFolder = project.getFolder(metaInfPath);
-        IPath sqlFolderPath = metaInfFolder.getProjectRelativePath().append(
-                className.replace(".", "/"));
+        IPath sqlFolderPath = project.getFolder(sourceFolderPath)
+                .getProjectRelativePath().append(Constants.META_INF).append(
+                        className.replace(".", "/"));
         IFolder sqlFolder = project.getFolder(sqlFolderPath);
         if (sqlFolder.exists()) {
             return sqlFolder;
@@ -114,30 +120,33 @@ public class NewSqlFileWizardDialogOpener {
         return project;
     }
 
-    protected String getMetaInfPath() {
+    protected String getSourceFolderPath() {
         IDialogSettings dialogSettings = Domax.getDefault().getDialogSettings();
         IDialogSettings section = dialogSettings
                 .getSection(Constants.NewSqlFileDialog.SECTION_NAME);
         if (section == null) {
             return null;
         }
-        return section.get(Constants.NewSqlFileDialog.META_INF_PATH_KEY);
+        return section.get(Constants.NewSqlFileDialog.SOURCE_FOLDER_PATH_KEY);
 
     }
 
-    protected void tryToSaveMetaInfPath(IFile sqlFile) {
+    protected void tryToSaveSourceFolderPath(IFile sqlFile) {
+        if (!this.javaProject.equals(JavaCore.create(sqlFile.getProject()))) {
+            return;
+        }
         IPath sqlFilePath = sqlFile.getProjectRelativePath();
-        for (int i = 0; i < sqlFilePath.segmentCount(); i++) {
-            String segment = sqlFilePath.segment(i);
-            if (Constants.META_INF.equals(segment)) {
-                saveMetaInfPath(sqlFilePath.uptoSegment(i + 1)
-                        .toPortableString());
+        for (IResource sourceFolder : JavaProjectUtil
+                .getSourceFolders(javaProject)) {
+            IPath sourceFolderPath = sourceFolder.getProjectRelativePath();
+            if (sqlFilePath.isPrefixOf(sourceFolderPath)) {
+                saveSourceFolderPath(sourceFolderPath.toPortableString());
                 break;
             }
         }
     }
 
-    protected void saveMetaInfPath(String metaInfPath) {
+    protected void saveSourceFolderPath(String sourceFolderPath) {
         IDialogSettings dialogSettings = Domax.getDefault().getDialogSettings();
         IDialogSettings section = dialogSettings
                 .getSection(Constants.NewSqlFileDialog.SECTION_NAME);
@@ -145,6 +154,7 @@ public class NewSqlFileWizardDialogOpener {
             section = dialogSettings
                     .addNewSection(Constants.NewSqlFileDialog.SECTION_NAME);
         }
-        section.put(Constants.NewSqlFileDialog.META_INF_PATH_KEY, metaInfPath);
+        section.put(Constants.NewSqlFileDialog.SOURCE_FOLDER_PATH_KEY,
+                sourceFolderPath);
     }
 }
