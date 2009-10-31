@@ -56,9 +56,10 @@ public class SqlFileChangeListener implements IResourceChangeListener {
 
     void checkSqlFile(IResource resource) {
         final IFile sqlFile = (IFile) resource.getAdapter(IFile.class);
-        if (sqlFile == null
-                || !sqlFile.getFileExtension().equalsIgnoreCase(
-                        Constants.SQL_FILE_EXTESION)) {
+        if (sqlFile == null) {
+            return;
+        }
+        if (!Constants.SQL_FILE_EXTESION.equals(sqlFile.getFileExtension())) {
             return;
         }
         DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
