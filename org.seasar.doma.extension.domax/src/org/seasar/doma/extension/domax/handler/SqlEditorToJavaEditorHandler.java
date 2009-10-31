@@ -42,8 +42,10 @@ public class SqlEditorToJavaEditorHandler extends AbstractHandler {
         }
         IFile file = (IFile) textEditor.getEditorInput()
                 .getAdapter(IFile.class);
-        if (file == null
-                || !file.getFileExtension().equals(Constants.SQL_FILE_EXTESION)) {
+        if (file == null) {
+            return null;
+        }
+        if (!Constants.SQL_FILE_EXTESION.equals(file.getFileExtension())) {
             return null;
         }
         return file;

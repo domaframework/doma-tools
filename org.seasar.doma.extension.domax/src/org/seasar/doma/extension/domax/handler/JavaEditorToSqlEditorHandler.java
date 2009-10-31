@@ -174,7 +174,10 @@ public class JavaEditorToSqlEditorHandler extends AbstractHandler {
         try {
             for (IResource child : sqlFolder.members()) {
                 IFile file = (IFile) child.getAdapter(IFile.class);
-                if (file.getFileExtension().equals(Constants.SQL_FILE_EXTESION)
+                if (file == null) {
+                    continue;
+                }
+                if (Constants.SQL_FILE_EXTESION.equals(file.getFileExtension())
                         && file.exists()) {
                     openSqlFile(file);
                     break;
