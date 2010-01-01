@@ -2,19 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            class="org.seasar.doma.extension.domax.property.ProjectPropertyPage"
-            id="org.seasar.doma.extension.domax.properties.samplePropertyPage"
-            name="Doma">
-         <enabledWhen>
-            <instanceof
-                  value="org.eclipse.jdt.core.IJavaProject">
-            </instanceof>
-         </enabledWhen>
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.seasar.doma.extension.domax.category"
