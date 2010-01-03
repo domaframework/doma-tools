@@ -2,7 +2,7 @@
 <feature
       id="org.seasar.doma.extension.feature"
       label="Doma Tools"
-      version="0.9.10.qualifier"
+      version="0.9.11.qualifier"
       provider-name="The Seasar Foundation"
       plugin="org.seasar.doma.extension.domax">
 
