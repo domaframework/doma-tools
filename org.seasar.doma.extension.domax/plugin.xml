@@ -70,12 +70,6 @@
          <activeWhen>
             <and>
                <with
-                     variable="activeEditorId">
-                  <equals
-                        value="org.eclipse.jdt.ui.CompilationUnitEditor">
-                  </equals>
-               </with>
-               <with
                      variable="selection">
                   <iterate
                         operator="or">
@@ -84,6 +78,20 @@
                      </instanceof>
                   </iterate>
                </with>
+               <or>
+                  <with
+                        variable="activeEditorId">
+                     <equals
+                           value="org.eclipse.jdt.ui.CompilationUnitEditor">
+                     </equals>
+                  </with>
+                  <with
+                        variable="activeEditorId">
+                     <equals
+                           value="com.google.gwt.eclipse.core.editors.gwtJavaEditor">
+                     </equals>
+                  </with>
+               </or>
             </and>
          </activeWhen>
       </handler>
@@ -180,12 +188,6 @@
                <visibleWhen>
                   <and>
                      <with
-                           variable="activeEditorId">
-                        <equals
-                              value="org.eclipse.jdt.ui.CompilationUnitEditor">
-                        </equals>
-                     </with>
-                     <with
                            variable="selection">
                         <iterate
                               operator="or">
@@ -194,6 +196,20 @@
                            </instanceof>
                         </iterate>
                      </with>
+                     <or>
+                        <with
+                              variable="activeEditorId">
+                           <equals
+                                 value="org.eclipse.jdt.ui.CompilationUnitEditor">
+                           </equals>
+                        </with>
+                        <with
+                              variable="activeEditorId">
+                           <equals
+                                 value="com.google.gwt.eclipse.core.editors.gwtJavaEditor">
+                           </equals>
+                        </with>
+                     </or>
                   </and>
                </visibleWhen>
             </command>
