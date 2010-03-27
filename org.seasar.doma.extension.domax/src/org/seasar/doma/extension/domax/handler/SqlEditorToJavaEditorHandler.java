@@ -15,7 +15,6 @@
  */
 package org.seasar.doma.extension.domax.handler;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
@@ -23,11 +22,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.seasar.doma.extension.domax.Constants;
-import org.seasar.doma.extension.domax.factory.Factory;
-import org.seasar.doma.extension.domax.model.DaoMethod;
-import org.seasar.doma.extension.domax.model.DaoMethodFactory;
 
-public class SqlEditorToJavaEditorHandler extends AbstractHandler {
+public class SqlEditorToJavaEditorHandler extends AbstractToJavaEditorHandler {
 
     public SqlEditorToJavaEditorHandler() {
     }
@@ -41,11 +37,7 @@ public class SqlEditorToJavaEditorHandler extends AbstractHandler {
         if (sqlFile == null) {
             return null;
         }
-        DaoMethod daoMethod = getDaoMethod(sqlFile);
-        if (daoMethod == null) {
-            return null;
-        }
-        daoMethod.openInEditor();
+        openDaoMethod(sqlFile);
         return null;
     }
 
@@ -64,11 +56,6 @@ public class SqlEditorToJavaEditorHandler extends AbstractHandler {
             return null;
         }
         return file;
-    }
-
-    protected DaoMethod getDaoMethod(IFile sqlFile) {
-        DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
-        return daoMethodFactory.createDaoMethod(sqlFile);
     }
 
 }

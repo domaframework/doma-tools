@@ -106,6 +106,23 @@
             </and>
          </activeWhen>
       </handler>
+      <handler
+            class="org.seasar.doma.extension.domax.handler.JavaPopupToSqlEditorHandler"
+            commandId="org.seasar.doma.extension.domax.commands.jumpToSqlFile">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="1">
+               </count>
+               <iterate>
+                  <adapt
+                        type="org.eclipse.jdt.core.IMethod">
+                  </adapt>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -147,6 +164,32 @@
                                  property="org.eclipse.core.resources.extension"
                                  value="sql">
                            </test>
+                        </adapt>
+                     </iterate>
+                  </with>
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="menu"
+               label="Doma">
+            <command
+                  commandId="org.seasar.doma.extension.domax.commands.jumpToSqlFile"
+                  label="Jump to SQL File"
+                  mnemonic="J"
+                  style="push">
+               <visibleWhen>
+                  <with
+                        variable="selection">
+                     <count
+                           value="1">
+                     </count>
+                     <iterate>
+                        <adapt
+                              type="org.eclipse.jdt.core.IMethod">
                         </adapt>
                      </iterate>
                   </with>
