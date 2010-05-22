@@ -42,7 +42,7 @@ public class JavaPopupToSqlEditorHandler extends AbstractToSqlEditorHandler {
         if (method == null) {
             return null;
         }
-        openSqlFile(method, shell);
+        openFile(method, shell);
         return null;
     }
 

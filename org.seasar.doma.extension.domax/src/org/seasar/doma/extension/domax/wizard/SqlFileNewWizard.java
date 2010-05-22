@@ -16,45 +16,20 @@
 package org.seasar.doma.extension.domax.wizard;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
-import org.seasar.doma.extension.domax.util.AssertionUtil;
 
 /**
  * @author taedium
  * 
  */
-public class NewSqlFileWizard extends Wizard implements INewWizard {
+public class SqlFileNewWizard extends ResourceFileNewWizard implements INewWizard {
 
-    private WizardNewFileCreationPage page;
-
-    private IContainer candidateContainer;
-
-    private String candidatelFileName;
-
-    private IFile newFile;
-
-    public NewSqlFileWizard(IContainer candidateContainer,
+    public SqlFileNewWizard(IContainer candidateContainer,
             String candidatelFileName) {
-        AssertionUtil.assertNotNull(candidateContainer, candidatelFileName);
-        this.candidateContainer = candidateContainer;
-        this.candidatelFileName = candidatelFileName;
+        super(candidateContainer, candidatelFileName);
         setWindowTitle("New SQL File");
-    }
-
-    @Override
-    public void init(IWorkbench workbench, IStructuredSelection selection) {
-    }
-
-    @Override
-    public boolean performFinish() {
-        newFile = page.createNewFile();
-        return true;
     }
 
     @Override
@@ -65,10 +40,6 @@ public class NewSqlFileWizard extends Wizard implements INewWizard {
         page.setTitle("SQL File");
         page.setDescription("Create a new sql file.");
         addPage(page);
-    }
-
-    public IFile getNewFile() {
-        return newFile;
     }
 
 }

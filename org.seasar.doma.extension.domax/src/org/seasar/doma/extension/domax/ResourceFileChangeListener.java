@@ -37,7 +37,7 @@ import org.seasar.doma.extension.domax.factory.Factory;
 import org.seasar.doma.extension.domax.model.DaoMethod;
 import org.seasar.doma.extension.domax.model.DaoMethodFactory;
 
-public class SqlFileChangeListener implements IResourceChangeListener {
+public class ResourceFileChangeListener implements IResourceChangeListener {
 
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
@@ -70,15 +70,17 @@ public class SqlFileChangeListener implements IResourceChangeListener {
     }
 
     void checkSqlFile(IResource resource) {
-        final IFile sqlFile = (IFile) resource.getAdapter(IFile.class);
-        if (sqlFile == null) {
+        final IFile file = (IFile) resource.getAdapter(IFile.class);
+        if (file == null) {
             return;
         }
-        if (!Constants.SQL_FILE_EXTESION.equals(sqlFile.getFileExtension())) {
+        String extension = file.getFileExtension();
+        if (!Constants.SQL_FILE_EXTESION.equals(extension)
+                && !Constants.SCRIPT_FILE_EXTESION.equals(extension)) {
             return;
         }
         DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
-        DaoMethod daoMethod = daoMethodFactory.createDaoMethod(sqlFile);
+        DaoMethod daoMethod = daoMethodFactory.createDaoMethod(file);
         if (daoMethod == null) {
             return;
         }
@@ -106,7 +108,7 @@ public class SqlFileChangeListener implements IResourceChangeListener {
                     buffer.save(monitor, true);
                     buffer.close();
                     compilationUnit.commitWorkingCopy(true, monitor);
-                    sqlFile.getProject().build(
+                    file.getProject().build(
                             IncrementalProjectBuilder.INCREMENTAL_BUILD,
                             monitor);
                     return Status.OK_STATUS;

@@ -32,21 +32,21 @@ import org.seasar.doma.extension.domax.util.JavaProjectUtil;
  */
 public class DaoMethodFactory {
 
-    public DaoMethod createDaoMethod(IFile sqlFile) {
-        AssertionUtil.assertNotNull(sqlFile);
+    public DaoMethod createDaoMethod(IFile file) {
+        AssertionUtil.assertNotNull(file);
 
-        IJavaProject javaProject = JavaCore.create(sqlFile.getProject());
+        IJavaProject javaProject = JavaCore.create(file.getProject());
         if (javaProject == null) {
             return null;
         }
         List<IResource> sourceFolders = JavaProjectUtil
                 .getSourceFolders(javaProject);
-        IPath sqlFilePath = sqlFile.getProjectRelativePath();
+        IPath filePath = file.getProjectRelativePath();
         for (IResource sourceFolder : sourceFolders) {
             IPath metaInfPath = sourceFolder.getProjectRelativePath().append(
                     Constants.META_INF);
-            if (metaInfPath.isPrefixOf(sqlFilePath)) {
-                IPath path = sqlFilePath.removeFirstSegments(
+            if (metaInfPath.isPrefixOf(filePath)) {
+                IPath path = filePath.removeFirstSegments(
                         metaInfPath.segmentCount()).removeFileExtension();
                 if (path.segmentCount() < 2) {
                     continue;

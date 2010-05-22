@@ -50,7 +50,7 @@ public class JavaEditorToSqlEditorHandler extends AbstractToSqlEditorHandler {
         if (selectedJavaElement == null) {
             return null;
         }
-        openSqlFile(selectedJavaElement, shell);
+        openFile(selectedJavaElement, shell);
         return null;
     }
 

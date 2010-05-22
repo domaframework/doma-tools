@@ -41,7 +41,7 @@ public class Domax extends AbstractUIPlugin {
         plugin = this;
 
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.addResourceChangeListener(new SqlFileChangeListener());
+        workspace.addResourceChangeListener(new ResourceFileChangeListener());
     }
 
     @Override

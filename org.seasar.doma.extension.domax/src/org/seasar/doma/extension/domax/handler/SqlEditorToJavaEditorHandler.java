@@ -33,15 +33,15 @@ public class SqlEditorToJavaEditorHandler extends AbstractToJavaEditorHandler {
         if (editor == null) {
             return null;
         }
-        IFile sqlFile = getSqlFile(editor);
-        if (sqlFile == null) {
+        IFile file = getFile(editor);
+        if (file == null) {
             return null;
         }
-        openDaoMethod(sqlFile);
+        openDaoMethod(file);
         return null;
     }
 
-    protected IFile getSqlFile(IEditorPart editor) {
+    protected IFile getFile(IEditorPart editor) {
         ITextEditor textEditor = (ITextEditor) editor
                 .getAdapter(ITextEditor.class);
         if (textEditor == null) {
@@ -52,7 +52,9 @@ public class SqlEditorToJavaEditorHandler extends AbstractToJavaEditorHandler {
         if (file == null) {
             return null;
         }
-        if (!Constants.SQL_FILE_EXTESION.equals(file.getFileExtension())) {
+        String extension = file.getFileExtension();
+        if (!Constants.SQL_FILE_EXTESION.equals(extension)
+                && !Constants.SCRIPT_FILE_EXTESION.equals(extension)) {
             return null;
         }
         return file;

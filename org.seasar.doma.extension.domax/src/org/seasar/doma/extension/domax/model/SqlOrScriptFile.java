@@ -13,25 +13,12 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package org.seasar.doma.extension.domax;
+package org.seasar.doma.extension.domax.model;
 
 /**
  * @author taedium
- * 
+ *
  */
-public final class Constants {
+public class SqlOrScriptFile {
 
-    public static final String META_INF = "META-INF";
-
-    public static final String SQL_FILE_EXTESION = "sql";
-
-    public static final String SCRIPT_FILE_EXTESION = "script";
-
-    public static final class ResourceFileNewWizard {
-
-        public static final String SECTION_NAME = ResourceFileNewWizard.class
-                .getName();
-
-        public static final String SOURCE_FOLDER_PATH_KEY = "source_folder_path";
-    }
 }

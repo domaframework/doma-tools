@@ -39,19 +39,19 @@ import org.seasar.doma.extension.domax.util.AssertionUtil;
 import org.seasar.doma.extension.domax.util.FolderUtil;
 import org.seasar.doma.extension.domax.util.JavaProjectUtil;
 
-public class NewSqlFileWizardDialogOpener {
+public abstract class ResourceFileNewWizardDialogOpener {
 
-    private final IJavaProject javaProject;
+    protected final IJavaProject javaProject;
 
-    private final String className;
+    protected final String className;
 
-    private final String methodName;
+    protected final String methodName;
 
-    private final Shell shell;
+    protected final Shell shell;
 
-    private final String sourceFolderPath;
+    protected final String sourceFolderPath;
 
-    public NewSqlFileWizardDialogOpener(IJavaProject javaProject,
+    public ResourceFileNewWizardDialogOpener(IJavaProject javaProject,
             String className, String methodName, Shell shell) {
         AssertionUtil.assertNotNull(javaProject, className, methodName, shell);
         this.javaProject = javaProject;
@@ -102,20 +102,19 @@ public class NewSqlFileWizardDialogOpener {
                     "source folder is not found.", status);
             return null;
         }
-        IContainer sqlFileContainer = createSqlFileContainer();
-        String sqlFileName = methodName + "." + Constants.SQL_FILE_EXTESION;
-        NewSqlFileWizard newSqlFileWizard = new NewSqlFileWizard(
-                sqlFileContainer, sqlFileName);
-        WizardDialog dialog = new WizardDialog(shell, newSqlFileWizard);
+        ResourceFileNewWizard wizard = createFileNewWizard();
+        WizardDialog dialog = new WizardDialog(shell, wizard);
         if (dialog.open() == WizardDialog.OK) {
-            IFile sqlFile = newSqlFileWizard.getNewFile();
-            if (sqlFile != null) {
-                tryToSaveSourceFolderPath(sqlFile);
-                return sqlFile;
+            IFile file = wizard.getNewFile();
+            if (file != null) {
+                tryToSaveSourceFolderPath(file);
+                return file;
             }
         }
         return null;
     }
+
+    protected abstract ResourceFileNewWizard createFileNewWizard();
 
     protected IContainer createSqlFileContainer() {
         IProject project = javaProject.getProject();
@@ -138,11 +137,12 @@ public class NewSqlFileWizardDialogOpener {
     protected String getSourceFolderPath() {
         IDialogSettings dialogSettings = Domax.getDefault().getDialogSettings();
         IDialogSettings section = dialogSettings
-                .getSection(Constants.NewSqlFileDialog.SECTION_NAME);
+                .getSection(Constants.ResourceFileNewWizard.SECTION_NAME);
         if (section == null) {
             return null;
         }
-        return section.get(Constants.NewSqlFileDialog.SOURCE_FOLDER_PATH_KEY);
+        return section
+                .get(Constants.ResourceFileNewWizard.SOURCE_FOLDER_PATH_KEY);
 
     }
 
@@ -164,12 +164,12 @@ public class NewSqlFileWizardDialogOpener {
     protected void saveSourceFolderPath(String sourceFolderPath) {
         IDialogSettings dialogSettings = Domax.getDefault().getDialogSettings();
         IDialogSettings section = dialogSettings
-                .getSection(Constants.NewSqlFileDialog.SECTION_NAME);
+                .getSection(Constants.ResourceFileNewWizard.SECTION_NAME);
         if (section == null) {
             section = dialogSettings
-                    .addNewSection(Constants.NewSqlFileDialog.SECTION_NAME);
+                    .addNewSection(Constants.ResourceFileNewWizard.SECTION_NAME);
         }
-        section.put(Constants.NewSqlFileDialog.SOURCE_FOLDER_PATH_KEY,
+        section.put(Constants.ResourceFileNewWizard.SOURCE_FOLDER_PATH_KEY,
                 sourceFolderPath);
     }
 }

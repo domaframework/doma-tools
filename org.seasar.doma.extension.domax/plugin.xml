@@ -32,10 +32,16 @@
                <iterate>
                   <adapt
                         type="org.eclipse.core.resources.IFile">
-                     <test
-                           property="org.eclipse.core.resources.extension"
-                           value="sql">
-                     </test>
+                     <or>
+                        <test
+                              property="org.eclipse.core.resources.extension"
+                              value="sql">
+                        </test>
+                        <test
+                              property="org.eclipse.core.resources.extension"
+                              value="script">
+                        </test>
+                     </or>
                   </adapt>
                </iterate>
             </with>
@@ -160,10 +166,16 @@
                      <iterate>
                         <adapt
                               type="org.eclipse.core.resources.IFile">
-                           <test
-                                 property="org.eclipse.core.resources.extension"
-                                 value="sql">
-                           </test>
+                           <or>
+                              <test
+                                    property="org.eclipse.core.resources.extension"
+                                    value="sql">
+                              </test>
+                              <test
+                                    property="org.eclipse.core.resources.extension"
+                                    value="script">
+                              </test>
+                           </or>
                         </adapt>
                      </iterate>
                   </with>

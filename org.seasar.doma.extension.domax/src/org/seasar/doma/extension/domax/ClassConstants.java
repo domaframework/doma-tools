@@ -32,4 +32,6 @@ public final class ClassConstants {
     public static final String BatchUpdate = "org.seasar.doma.BatchUpdate";
 
     public static final String BatchDelete = "org.seasar.doma.BatchDelete";
+
+    public static final String Script = "org.seasar.doma.Script";
 }

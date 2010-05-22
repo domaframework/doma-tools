@@ -12,17 +12,17 @@ public abstract class AbstractToJavaEditorHandler extends AbstractHandler {
     protected AbstractToJavaEditorHandler() {
     }
 
-    protected void openDaoMethod(IFile sqlFile) {
-        assertNotNull(sqlFile);
-        DaoMethod daoMethod = getDaoMethod(sqlFile);
+    protected void openDaoMethod(IFile file) {
+        assertNotNull(file);
+        DaoMethod daoMethod = getDaoMethod(file);
         if (daoMethod != null) {
             daoMethod.openInEditor();
         }
     }
 
-    private DaoMethod getDaoMethod(IFile sqlFile) {
+    private DaoMethod getDaoMethod(IFile file) {
         DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
-        return daoMethodFactory.createDaoMethod(sqlFile);
+        return daoMethodFactory.createDaoMethod(file);
     }
 
 }

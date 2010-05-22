@@ -33,15 +33,15 @@ public class SqlPopupToJavaEditorHandler extends AbstractToJavaEditorHandler {
         if (selection == null) {
             return null;
         }
-        IFile sqlFile = getSqlFile(selection);
-        if (sqlFile == null) {
+        IFile file = getFile(selection);
+        if (file == null) {
             return null;
         }
-        openDaoMethod(sqlFile);
+        openDaoMethod(file);
         return null;
     }
 
-    protected IFile getSqlFile(ISelection selection) {
+    protected IFile getFile(ISelection selection) {
         if (!(selection instanceof IStructuredSelection)) {
             return null;
         }

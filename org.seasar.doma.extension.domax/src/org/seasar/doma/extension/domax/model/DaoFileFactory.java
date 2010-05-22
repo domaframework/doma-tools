@@ -16,11 +16,11 @@
 package org.seasar.doma.extension.domax.model;
 
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 
-public class SqlFactory {
+public class DaoFileFactory {
 
-    public Sql createSql(IMethod method) {
-        method.getAnnotation("Select");
+    public DaoFile createDaoFile(IType type, IMethod method) {
 
         return null;
     }

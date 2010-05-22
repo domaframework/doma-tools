@@ -25,27 +25,29 @@ import org.seasar.doma.extension.domax.Constants;
 import org.seasar.doma.extension.domax.Logger;
 import org.seasar.doma.extension.domax.util.AnnotationUtil;
 import org.seasar.doma.extension.domax.util.JavaProjectUtil;
-import org.seasar.doma.extension.domax.wizard.NewSqlFileWizardDialogOpener;
+import org.seasar.doma.extension.domax.wizard.ResourceFileNewWizardDialogOpener;
+import org.seasar.doma.extension.domax.wizard.ScriptFileNewWizardDialogOpener;
+import org.seasar.doma.extension.domax.wizard.SqlFileNewWizardDialogOpener;
 
 public abstract class AbstractToSqlEditorHandler extends AbstractHandler {
 
     protected AbstractToSqlEditorHandler() {
     }
 
-    protected void openSqlFile(IJavaElement javaElement, Shell shell) {
+    protected void openFile(IJavaElement javaElement, Shell shell) {
         assertNotNull(javaElement, shell);
         IMethod method = (IMethod) javaElement.getAdapter(IMethod.class);
         if (method != null) {
-            openSqlFile(method, shell);
+            openFile(method, shell);
         } else {
             IType type = (IType) javaElement.getAdapter(IType.class);
             if (type != null) {
-                openSqlFile(type);
+                openFile(type);
             }
         }
     }
 
-    protected void openSqlFile(IMethod method, Shell shell) {
+    protected void openFile(IMethod method, Shell shell) {
         assertNotNull(method, shell);
         IType type = (IType) method.getParent();
         if (type == null) {
@@ -54,64 +56,78 @@ public abstract class AbstractToSqlEditorHandler extends AbstractHandler {
         if (!AnnotationUtil.isExistent(type, ClassConstants.Dao)) {
             return;
         }
-        String className = type.getFullyQualifiedName();
-        String methodName = method.getElementName();
         IJavaProject javaProject = type.getJavaProject();
-        IFile sqlFile = findSqlFile(javaProject, className, methodName);
-        if (sqlFile != null) {
-            openSqlFile(sqlFile);
+        IFile file = findFile(javaProject, type, method);
+        if (file != null) {
+            openFile(file);
         } else {
-            sqlFile = createSqlFileWithWizard(javaProject, className,
-                    methodName, shell);
-            if (sqlFile != null) {
-                openSqlFile(sqlFile);
+            ResourceFileNewWizardDialogOpener opener = createNewWizardDialogOpener(
+                    javaProject, type, method, shell);
+            file = opener.open();
+            if (file != null) {
+                openFile(file);
             }
         }
     }
 
-    private IFile createSqlFileWithWizard(IJavaProject javaProject,
-            String className, String methodName, Shell shell) {
-        NewSqlFileWizardDialogOpener opener = new NewSqlFileWizardDialogOpener(
-                javaProject, className, methodName, shell);
-        return opener.open();
+    private ResourceFileNewWizardDialogOpener createNewWizardDialogOpener(
+            IJavaProject javaProject, IType type, IMethod method, Shell shell) {
+        String typeName = type.getFullyQualifiedName();
+        String methodName = method.getElementName();
+        if (AnnotationUtil.isExistent(method, ClassConstants.Script)) {
+            return new ScriptFileNewWizardDialogOpener(javaProject, typeName,
+                    methodName, shell);
+        }
+        return new SqlFileNewWizardDialogOpener(javaProject, typeName,
+                methodName, shell);
     }
 
-    private IFile findSqlFile(IJavaProject javaProject, String className,
-            String methodName) {
+    private IFile findFile(IJavaProject javaProject, IType type, IMethod method) {
+        IPath path = Path.fromPortableString(
+                type.getFullyQualifiedName().replace(".", "/")).append(
+                method.getElementName());
+        if (AnnotationUtil.isExistent(method, ClassConstants.Script)) {
+            return findFile(javaProject, path, Constants.SCRIPT_FILE_EXTESION);
+        }
+        return findFile(javaProject, path, Constants.SQL_FILE_EXTESION);
+    }
+
+    private IFile findFile(IJavaProject javaProject, IPath path,
+            String extension) {
         IProject project = javaProject.getProject();
-        IPath path = Path.fromPortableString(className.replace(".", "/"))
-                .append(methodName);
         for (IResource sourceFolder : JavaProjectUtil
                 .getSourceFolders(javaProject)) {
-            IPath sqlFilePath = sourceFolder.getProjectRelativePath().append(
-                    Constants.META_INF).append(path).addFileExtension(
-                    Constants.SQL_FILE_EXTESION);
-            IFile sqlFile = project.getFile(sqlFilePath);
-            if (sqlFile.exists()) {
-                return sqlFile;
+            IPath filePath = sourceFolder.getProjectRelativePath().append(
+                    Constants.META_INF).append(path)
+                    .addFileExtension(extension);
+            IFile file = project.getFile(filePath);
+            if (file.exists()) {
+                return file;
             }
         }
         return null;
     }
 
-    private void openSqlFile(IType type) {
+    private void openFile(IType type) {
         if (!AnnotationUtil.isExistent(type, ClassConstants.Dao)) {
             return;
         }
         String className = type.getFullyQualifiedName();
-        IFolder sqlFolder = findSqlFolder(type.getJavaProject(), className);
-        if (sqlFolder == null) {
+        IFolder folder = findFolder(type.getJavaProject(), className);
+        if (folder == null) {
             return;
         }
         try {
-            for (IResource child : sqlFolder.members()) {
+            for (IResource child : folder.members()) {
                 IFile file = (IFile) child.getAdapter(IFile.class);
                 if (file == null) {
                     continue;
                 }
-                if (Constants.SQL_FILE_EXTESION.equals(file.getFileExtension())
+                String extension = file.getFileExtension();
+                if ((Constants.SQL_FILE_EXTESION.equals(extension) || Constants.SCRIPT_FILE_EXTESION
+                        .equals(extension))
                         && file.exists()) {
-                    openSqlFile(file);
+                    openFile(file);
                     break;
                 }
             }
@@ -119,7 +135,7 @@ public abstract class AbstractToSqlEditorHandler extends AbstractHandler {
         }
     }
 
-    private IFolder findSqlFolder(IJavaProject javaProject, String className) {
+    private IFolder findFolder(IJavaProject javaProject, String className) {
         IProject project = javaProject.getProject();
         IPath path = Path.fromPortableString(className.replace(".", "/"));
         for (IResource sourceFolder : JavaProjectUtil
@@ -134,7 +150,7 @@ public abstract class AbstractToSqlEditorHandler extends AbstractHandler {
         return null;
     }
 
-    private void openSqlFile(IFile sqlFile) {
+    private void openFile(IFile file) {
         IWorkbenchWindow window = PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow();
         if (window == null) {
@@ -142,7 +158,7 @@ public abstract class AbstractToSqlEditorHandler extends AbstractHandler {
         }
         IWorkbenchPage page = window.getActivePage();
         try {
-            IDE.openEditor(page, sqlFile);
+            IDE.openEditor(page, file);
         } catch (PartInitException e) {
             Logger.error(e);
         }
