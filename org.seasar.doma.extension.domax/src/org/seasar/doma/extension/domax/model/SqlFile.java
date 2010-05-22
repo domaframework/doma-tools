@@ -15,10 +15,28 @@
  */
 package org.seasar.doma.extension.domax.model;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.swt.widgets.Shell;
+import org.seasar.doma.extension.domax.wizard.ResourceFileNewWizardDialogOpener;
+import org.seasar.doma.extension.domax.wizard.SqlFileNewWizardDialogOpener;
+
 /**
  * @author taedium
- *
+ * 
  */
-public class SqlFile {
+public class SqlFile extends ResourceFile {
+
+    public SqlFile(IFile file) {
+        super(file);
+    }
+
+    @Override
+    protected ResourceFileNewWizardDialogOpener createNewWizardDialogOpener(
+            IJavaProject javaProject, IType type, IMethod method, Shell shell) {
+        return new SqlFileNewWizardDialogOpener(type, method, shell);
+    }
 
 }

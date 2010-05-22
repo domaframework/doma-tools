@@ -16,15 +16,16 @@
 package org.seasar.doma.extension.domax.wizard;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.swt.widgets.Shell;
 import org.seasar.doma.extension.domax.Constants;
 
-public class SqlFileNewWizardDialogOpener extends ResourceFileNewWizardDialogOpener {
+public class SqlFileNewWizardDialogOpener extends
+        ResourceFileNewWizardDialogOpener {
 
-    public SqlFileNewWizardDialogOpener(IJavaProject javaProject,
-            String className, String methodName, Shell shell) {
-        super(javaProject, className, methodName, shell);
+    public SqlFileNewWizardDialogOpener(IType type, IMethod method, Shell shell) {
+        super(type, method, shell);
     }
 
     @Override

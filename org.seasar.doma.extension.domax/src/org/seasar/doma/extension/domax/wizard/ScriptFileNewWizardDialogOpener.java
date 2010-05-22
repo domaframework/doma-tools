@@ -16,22 +16,24 @@
 package org.seasar.doma.extension.domax.wizard;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.swt.widgets.Shell;
 import org.seasar.doma.extension.domax.Constants;
 
 public class ScriptFileNewWizardDialogOpener extends
         ResourceFileNewWizardDialogOpener {
 
-    public ScriptFileNewWizardDialogOpener(IJavaProject javaProject,
-            String className, String methodName, Shell shell) {
-        super(javaProject, className, methodName, shell);
+    public ScriptFileNewWizardDialogOpener(IType type, IMethod method,
+            Shell shell) {
+        super(type, method, shell);
     }
 
     @Override
     protected ResourceFileNewWizard createFileNewWizard() {
         IContainer sqlFileContainer = createSqlFileContainer();
-        String scriptFileName = methodName + "." + Constants.SCRIPT_FILE_EXTESION;
+        String scriptFileName = methodName + "."
+                + Constants.SCRIPT_FILE_EXTESION;
         return new ScriptFileNewWizard(sqlFileContainer, scriptFileName);
     }
 

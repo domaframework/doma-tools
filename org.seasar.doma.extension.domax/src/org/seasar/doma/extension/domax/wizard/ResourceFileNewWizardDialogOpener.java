@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -43,7 +45,7 @@ public abstract class ResourceFileNewWizardDialogOpener {
 
     protected final IJavaProject javaProject;
 
-    protected final String className;
+    protected final String typeName;
 
     protected final String methodName;
 
@@ -51,16 +53,16 @@ public abstract class ResourceFileNewWizardDialogOpener {
 
     protected final String sourceFolderPath;
 
-    public ResourceFileNewWizardDialogOpener(IJavaProject javaProject,
-            String className, String methodName, Shell shell) {
-        AssertionUtil.assertNotNull(javaProject, className, methodName, shell);
-        this.javaProject = javaProject;
-        this.className = className;
-        this.methodName = methodName;
+    public ResourceFileNewWizardDialogOpener(IType type, IMethod method,
+            Shell shell) {
+        AssertionUtil.assertNotNull(type, method, shell);
+        this.javaProject = type.getJavaProject();
+        this.typeName = type.getFullyQualifiedName();
+        this.methodName = method.getElementName();
         this.shell = shell;
         String sourceFolderPath = getSourceFolderPath();
         if (sourceFolderPath == null) {
-            sourceFolderPath = findSourceFolderPath(javaProject, className);
+            sourceFolderPath = findSourceFolderPath(javaProject, typeName);
         }
         this.sourceFolderPath = sourceFolderPath;
     }
@@ -120,7 +122,7 @@ public abstract class ResourceFileNewWizardDialogOpener {
         IProject project = javaProject.getProject();
         IPath sqlFolderPath = project.getFolder(sourceFolderPath)
                 .getProjectRelativePath().append(Constants.META_INF).append(
-                        className.replace(".", "/"));
+                        typeName.replace(".", "/"));
         IFolder sqlFolder = project.getFolder(sqlFolderPath);
         if (sqlFolder.exists()) {
             return sqlFolder;

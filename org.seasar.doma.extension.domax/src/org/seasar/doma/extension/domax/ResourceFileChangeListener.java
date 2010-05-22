@@ -36,6 +36,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.seasar.doma.extension.domax.factory.Factory;
 import org.seasar.doma.extension.domax.model.DaoMethod;
 import org.seasar.doma.extension.domax.model.DaoMethodFactory;
+import org.seasar.doma.extension.domax.model.ResourceFile;
 
 public class ResourceFileChangeListener implements IResourceChangeListener {
 
@@ -62,29 +63,30 @@ public class ResourceFileChangeListener implements IResourceChangeListener {
             case IResourceDelta.ADDED:
             case IResourceDelta.REMOVED:
             case IResourceDelta.CHANGED:
-                checkSqlFile(resource);
+                DaoMethod daoMethod = createDaoMethod(resource);
+                if (daoMethod != null) {
+                    submitJob(resource, daoMethod);
+                }
                 break;
             }
             return true;
         }
     }
 
-    void checkSqlFile(IResource resource) {
+    private DaoMethod createDaoMethod(IResource resource) {
         final IFile file = (IFile) resource.getAdapter(IFile.class);
         if (file == null) {
-            return;
+            return null;
         }
         String extension = file.getFileExtension();
-        if (!Constants.SQL_FILE_EXTESION.equals(extension)
-                && !Constants.SCRIPT_FILE_EXTESION.equals(extension)) {
-            return;
+        if (!ResourceFile.isResourceFileExtension(extension)) {
+            return null;
         }
         DaoMethodFactory daoMethodFactory = Factory.getDaoMethodFactory();
-        DaoMethod daoMethod = daoMethodFactory.createDaoMethod(file);
-        if (daoMethod == null) {
-            return;
-        }
+        return daoMethodFactory.createDaoMethod(file);
+    }
 
+    private void submitJob(final IResource resource, DaoMethod daoMethod) {
         IJavaProject javaProject = daoMethod.getJavaProject();
         try {
             IType type = javaProject.findType(daoMethod.getClassName());
@@ -108,7 +110,7 @@ public class ResourceFileChangeListener implements IResourceChangeListener {
                     buffer.save(monitor, true);
                     buffer.close();
                     compilationUnit.commitWorkingCopy(true, monitor);
-                    file.getProject().build(
+                    resource.getProject().build(
                             IncrementalProjectBuilder.INCREMENTAL_BUILD,
                             monitor);
                     return Status.OK_STATUS;
@@ -120,4 +122,5 @@ public class ResourceFileChangeListener implements IResourceChangeListener {
             Logger.error(e);
         }
     }
+
 }

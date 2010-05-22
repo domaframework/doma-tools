@@ -16,22 +16,48 @@
 package org.seasar.doma.extension.domax.model;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.seasar.doma.extension.domax.Constants;
 import org.seasar.doma.extension.domax.Logger;
+import org.seasar.doma.extension.domax.wizard.ResourceFileNewWizardDialogOpener;
 
-public class DaoFile {
+public abstract class ResourceFile {
 
-    private final IFile file;
+    protected IFile file;
 
-    public DaoFile(IFile file) {
+    public ResourceFile(IFile file) {
         this.file = file;
     }
 
+    public boolean exists() {
+        return existsInternal();
+    }
+
+    private boolean existsInternal() {
+        return file != null && file.exists();
+    }
+
+    public void openNewWizardDialog(IType type, IMethod method, Shell shell) {
+        ResourceFileNewWizardDialogOpener opener = createNewWizardDialogOpener(
+                type.getJavaProject(), type, method, shell);
+        file = opener.open();
+    }
+
+    protected abstract ResourceFileNewWizardDialogOpener createNewWizardDialogOpener(
+            IJavaProject javaProject, IType type, IMethod method, Shell shell);
+
     public void openInEditor() {
+        if (!existsInternal()) {
+            return;
+        }
         IWorkbenchWindow window = PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow();
         if (window == null) {
@@ -43,6 +69,11 @@ public class DaoFile {
         } catch (PartInitException e) {
             Logger.error(e);
         }
+    }
+
+    public static boolean isResourceFileExtension(String extension) {
+        return Constants.SQL_FILE_EXTESION.equals(extension)
+                || Constants.SCRIPT_FILE_EXTESION.equals(extension);
     }
 
 }

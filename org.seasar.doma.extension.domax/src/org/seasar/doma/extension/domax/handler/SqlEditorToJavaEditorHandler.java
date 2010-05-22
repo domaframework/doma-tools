@@ -21,7 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.seasar.doma.extension.domax.Constants;
+import org.seasar.doma.extension.domax.model.ResourceFile;
 
 public class SqlEditorToJavaEditorHandler extends AbstractToJavaEditorHandler {
 
@@ -53,8 +53,7 @@ public class SqlEditorToJavaEditorHandler extends AbstractToJavaEditorHandler {
             return null;
         }
         String extension = file.getFileExtension();
-        if (!Constants.SQL_FILE_EXTESION.equals(extension)
-                && !Constants.SCRIPT_FILE_EXTESION.equals(extension)) {
+        if (!ResourceFile.isResourceFileExtension(extension)) {
             return null;
         }
         return file;

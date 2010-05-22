@@ -15,10 +15,27 @@
  */
 package org.seasar.doma.extension.domax.model;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.swt.widgets.Shell;
+import org.seasar.doma.extension.domax.wizard.ResourceFileNewWizardDialogOpener;
+import org.seasar.doma.extension.domax.wizard.ScriptFileNewWizardDialogOpener;
+
 /**
  * @author taedium
- *
+ * 
  */
-public class ScriptFile {
+public class ScriptFile extends ResourceFile {
 
+    public ScriptFile(IFile file) {
+        super(file);
+    }
+
+    @Override
+    protected ResourceFileNewWizardDialogOpener createNewWizardDialogOpener(
+            IJavaProject javaProject, IType type, IMethod method, Shell shell) {
+        return new ScriptFileNewWizardDialogOpener(type, method, shell);
+    }
 }
