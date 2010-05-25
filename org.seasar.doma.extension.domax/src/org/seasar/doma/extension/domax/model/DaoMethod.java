@@ -41,7 +41,7 @@ public class DaoMethod {
      * @param className
      * @param methodName
      */
-    public DaoMethod(IJavaProject javaProject, String className,
+    protected DaoMethod(IJavaProject javaProject, String className,
             String methodName) {
         AssertionUtil.assertNotNull(javaProject, className, methodName);
         this.javaProject = javaProject;

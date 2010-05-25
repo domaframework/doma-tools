@@ -29,7 +29,7 @@ import org.seasar.doma.extension.domax.wizard.SqlFileNewWizardDialogOpener;
  */
 public class SqlFile extends ResourceFile {
 
-    public SqlFile(IFile file) {
+    protected SqlFile(IFile file) {
         super(file);
     }
 

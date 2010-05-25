@@ -7,12 +7,13 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.swt.widgets.Shell;
+import org.seasar.doma.extension.domax.factory.Factory;
 import org.seasar.doma.extension.domax.model.ResourceFile;
 import org.seasar.doma.extension.domax.model.ResourceFileFactory;
 
-public abstract class AbstractToSqlEditorHandler extends AbstractHandler {
+public abstract class AbstractToResourceEditorHandler extends AbstractHandler {
 
-    protected AbstractToSqlEditorHandler() {
+    protected AbstractToResourceEditorHandler() {
     }
 
     protected void openFile(IJavaElement javaElement, Shell shell) {
@@ -23,7 +24,9 @@ public abstract class AbstractToSqlEditorHandler extends AbstractHandler {
         } else {
             IType type = (IType) javaElement.getAdapter(IType.class);
             if (type != null) {
-                ResourceFile resourceFile = ResourceFileFactory
+                ResourceFileFactory resourceFileFactory = Factory
+                        .getResourceFileFactory();
+                ResourceFile resourceFile = resourceFileFactory
                         .createResourceFile(type);
                 if (resourceFile != null && resourceFile.exists()) {
                     resourceFile.openInEditor();
@@ -38,7 +41,9 @@ public abstract class AbstractToSqlEditorHandler extends AbstractHandler {
         if (type == null) {
             return;
         }
-        ResourceFile resourceFile = ResourceFileFactory.createResourceFile(
+        ResourceFileFactory resourceFileFactory = Factory
+                .getResourceFileFactory();
+        ResourceFile resourceFile = resourceFileFactory.createResourceFile(
                 type, method);
         if (resourceFile == null) {
             return;

@@ -24,9 +24,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class JavaPopupToSqlEditorHandler extends AbstractToSqlEditorHandler {
+public class JavaPopupToResourceEditorHandler extends AbstractToResourceEditorHandler {
 
-    public JavaPopupToSqlEditorHandler() {
+    public JavaPopupToResourceEditorHandler() {
     }
 
     public Object execute(ExecutionEvent event) throws ExecutionException {

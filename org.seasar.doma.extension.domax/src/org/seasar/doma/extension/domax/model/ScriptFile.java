@@ -29,7 +29,7 @@ import org.seasar.doma.extension.domax.wizard.ScriptFileNewWizardDialogOpener;
  */
 public class ScriptFile extends ResourceFile {
 
-    public ScriptFile(IFile file) {
+    protected ScriptFile(IFile file) {
         super(file);
     }
 

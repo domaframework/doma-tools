@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class JavaEditorToSqlEditorHandler extends AbstractToSqlEditorHandler {
+public class JavaEditorToResourceEditorHandler extends AbstractToResourceEditorHandler {
 
-    public JavaEditorToSqlEditorHandler() {
+    public JavaEditorToResourceEditorHandler() {
     }
 
     public Object execute(ExecutionEvent event) throws ExecutionException {

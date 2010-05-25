@@ -18,22 +18,22 @@ package org.seasar.doma.extension.domax.handler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.seasar.doma.extension.domax.model.ResourceFile;
 
-public class SqlPopupToJavaEditorHandler extends AbstractToJavaEditorHandler {
+public class ResourceEditorToJavaEditorHandler extends AbstractToJavaEditorHandler {
 
-    public SqlPopupToJavaEditorHandler() {
+    public ResourceEditorToJavaEditorHandler() {
     }
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        ISelection selection = HandlerUtil.getActiveMenuSelection(event);
-        if (selection == null) {
+        IEditorPart editor = HandlerUtil.getActiveEditor(event);
+        if (editor == null) {
             return null;
         }
-        IFile file = getFile(selection);
+        IFile file = getFile(editor);
         if (file == null) {
             return null;
         }
@@ -41,17 +41,22 @@ public class SqlPopupToJavaEditorHandler extends AbstractToJavaEditorHandler {
         return null;
     }
 
-    protected IFile getFile(ISelection selection) {
-        if (!(selection instanceof IStructuredSelection)) {
+    protected IFile getFile(IEditorPart editor) {
+        ITextEditor textEditor = (ITextEditor) editor
+                .getAdapter(ITextEditor.class);
+        if (textEditor == null) {
             return null;
         }
-        IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-        Object element = structuredSelection.getFirstElement();
-        if (!(element instanceof IAdaptable)) {
+        IFile file = (IFile) textEditor.getEditorInput()
+                .getAdapter(IFile.class);
+        if (file == null) {
             return null;
         }
-        IAdaptable adaptable = (IAdaptable) element;
-        return (IFile) adaptable.getAdapter(IFile.class);
+        String extension = file.getFileExtension();
+        if (!ResourceFile.isResourceFileExtension(extension)) {
+            return null;
+        }
+        return file;
     }
 
 }

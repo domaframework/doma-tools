@@ -16,6 +16,7 @@
 package org.seasar.doma.extension.domax.factory;
 
 import org.seasar.doma.extension.domax.model.DaoMethodFactory;
+import org.seasar.doma.extension.domax.model.ResourceFileFactory;
 
 /**
  * @author taedium
@@ -25,5 +26,9 @@ public class Factory {
 
     public static DaoMethodFactory getDaoMethodFactory() {
         return new DaoMethodFactory();
+    }
+
+    public static ResourceFileFactory getResourceFileFactory() {
+        return new ResourceFileFactory();
     }
 }

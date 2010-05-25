@@ -32,7 +32,7 @@ import org.seasar.doma.extension.domax.util.JavaProjectUtil;
 
 public class ResourceFileFactory {
 
-    public static ResourceFile createResourceFile(IType type) {
+    public ResourceFile createResourceFile(IType type) {
         if (!AnnotationUtil.isExistent(type, ClassConstants.Dao)) {
             return null;
         }
@@ -61,7 +61,7 @@ public class ResourceFileFactory {
         return null;
     }
 
-    public static ResourceFile createResourceFile(IType type, IMethod method) {
+    public ResourceFile createResourceFile(IType type, IMethod method) {
         if (!AnnotationUtil.isExistent(type, ClassConstants.Dao)) {
             return null;
         }
@@ -78,7 +78,7 @@ public class ResourceFileFactory {
         return new SqlFile(file);
     }
 
-    private static IFile findFile(IJavaProject javaProject, IPath path,
+    private IFile findFile(IJavaProject javaProject, IPath path,
             String extension) {
         IProject project = javaProject.getProject();
         for (IResource sourceFolder : JavaProjectUtil
@@ -94,7 +94,7 @@ public class ResourceFileFactory {
         return null;
     }
 
-    private static IFolder findFolder(IJavaProject javaProject, String className) {
+    private IFolder findFolder(IJavaProject javaProject, String className) {
         IProject project = javaProject.getProject();
         IPath path = Path.fromPortableString(className.replace(".", "/"));
         for (IResource sourceFolder : JavaProjectUtil

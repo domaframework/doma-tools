@@ -21,7 +21,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.seasar.doma.extension.domax.handler.SqlPopupToJavaEditorHandler"
+            class="org.seasar.doma.extension.domax.handler.ResourcePopupToJavaEditorHandler"
             commandId="org.seasar.doma.extension.domax.commands.jumpToDao">
          <activeWhen>
             <with
@@ -48,7 +48,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.seasar.doma.extension.domax.handler.SqlEditorToJavaEditorHandler"
+            class="org.seasar.doma.extension.domax.handler.ResourceEditorToJavaEditorHandler"
             commandId="org.seasar.doma.extension.domax.commands.jumpToDao">
          <activeWhen>
             <and>
@@ -82,7 +82,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.seasar.doma.extension.domax.handler.JavaEditorToSqlEditorHandler"
+            class="org.seasar.doma.extension.domax.handler.JavaEditorToResourceEditorHandler"
             commandId="org.seasar.doma.extension.domax.commands.jumpToSqlFile">
          <activeWhen>
             <and>
@@ -113,7 +113,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.seasar.doma.extension.domax.handler.JavaPopupToSqlEditorHandler"
+            class="org.seasar.doma.extension.domax.handler.JavaPopupToResourceEditorHandler"
             commandId="org.seasar.doma.extension.domax.commands.jumpToSqlFile">
          <activeWhen>
             <with

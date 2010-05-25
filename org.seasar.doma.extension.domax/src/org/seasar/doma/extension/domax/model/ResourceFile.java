@@ -33,7 +33,7 @@ public abstract class ResourceFile {
 
     protected IFile file;
 
-    public ResourceFile(IFile file) {
+    protected ResourceFile(IFile file) {
         this.file = file;
     }
 
