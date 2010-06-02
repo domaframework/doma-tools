@@ -6,7 +6,7 @@
    <feature url="features/org.seasar.doma.extension.feature_1.6.0.201005012240.jar" id="org.seasar.doma.extension.feature" version="1.6.0.201005012240">
       <category name="Doma"/>
    </feature>
-   <feature url="features/org.seasar.doma.extension.feature_1.7.0.201005252148.jar" id="org.seasar.doma.extension.feature" version="1.7.0.201005252148">
+   <feature url="features/org.seasar.doma.extension.feature_1.7.0.201006030039.jar" id="org.seasar.doma.extension.feature" version="1.7.0.201006030039">
       <category name="Doma"/>
    </feature>
    <category-def name="Doma" label="Doma"/>
