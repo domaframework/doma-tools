@@ -27,7 +27,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class JavaEditorToResourceEditorHandler extends AbstractToResourceEditorHandler {
+public class JavaEditorToResourceEditorHandler extends
+        AbstractToResourceEditorHandler {
 
     public JavaEditorToResourceEditorHandler() {
     }
@@ -38,7 +39,7 @@ public class JavaEditorToResourceEditorHandler extends AbstractToResourceEditorH
             return null;
         }
         IEditorPart editor = HandlerUtil.getActiveEditor(event);
-        if (selection == null) {
+        if (editor == null) {
             return null;
         }
         Shell shell = HandlerUtil.getActiveShell(event);
@@ -60,9 +61,6 @@ public class JavaEditorToResourceEditorHandler extends AbstractToResourceEditorH
             return null;
         }
         ITextSelection textSelection = (ITextSelection) selection;
-        if (textSelection == null) {
-            return null;
-        }
         IJavaElement javaElement = JavaUI.getEditorInputJavaElement(editor
                 .getEditorInput());
         if (javaElement == null) {
