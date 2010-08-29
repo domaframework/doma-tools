@@ -39,7 +39,7 @@ public class Domax extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-
+        
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.addResourceChangeListener(new ResourceFileChangeListener());
     }
