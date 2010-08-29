@@ -294,4 +294,10 @@
          </menu>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.seasar.doma.extension.domax.Domax">
+      </startup>
+   </extension>
 </plugin>

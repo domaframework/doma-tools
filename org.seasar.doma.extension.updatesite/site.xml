@@ -9,5 +9,8 @@
    <feature url="features/org.seasar.doma.extension.feature_1.8.0.201006152300.jar" id="org.seasar.doma.extension.feature" version="1.8.0.201006152300">
       <category name="Doma"/>
    </feature>
+   <feature url="features/org.seasar.doma.extension.feature_1.9.0.201008291132.jar" id="org.seasar.doma.extension.feature" version="1.9.0.201008291132">
+      <category name="Doma"/>
+   </feature>
    <category-def name="Doma" label="Doma"/>
 </site>

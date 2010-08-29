@@ -17,13 +17,14 @@ package org.seasar.doma.extension.domax;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Domax extends AbstractUIPlugin {
+public class Domax extends AbstractUIPlugin implements IStartup {
 
     public static final String PLUGIN_ID = "org.seasar.doma.extension.domax";
 
@@ -36,12 +37,15 @@ public class Domax extends AbstractUIPlugin {
     }
 
     @Override
+    public void earlyStartup() {
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        workspace.addResourceChangeListener(new ResourceFileChangeListener());
+    }
+
+    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.addResourceChangeListener(new ResourceFileChangeListener());
     }
 
     @Override
