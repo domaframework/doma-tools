@@ -57,6 +57,7 @@ public class ResourceFileChangeListener implements IResourceChangeListener {
 
     private class SqlFileDeltaVisitor implements IResourceDeltaVisitor {
 
+        @Override
         public boolean visit(IResourceDelta delta) throws CoreException {
             IResource resource = delta.getResource();
             switch (delta.getKind()) {
@@ -116,7 +117,7 @@ public class ResourceFileChangeListener implements IResourceChangeListener {
                     return Status.OK_STATUS;
                 }
             };
-            job.setPriority(Job.SHORT);
+            job.setPriority(Job.BUILD);
             job.schedule();
         } catch (JavaModelException e) {
             Logger.error(e);
