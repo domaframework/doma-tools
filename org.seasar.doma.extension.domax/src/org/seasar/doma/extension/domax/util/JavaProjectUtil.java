@@ -29,9 +29,11 @@ public final class JavaProjectUtil {
     public static List<IResource> getSourceFolders(IJavaProject javaProject) {
         List<IResource> results = new ArrayList<IResource>();
         try {
-            for (IPackageFragmentRoot root : javaProject
-                    .getPackageFragmentRoots()) {
-                if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+            IPackageFragmentRoot[] roots = javaProject
+                    .getAllPackageFragmentRoots();
+            for (IPackageFragmentRoot root : roots) {
+                if (root.getJavaProject() == javaProject
+                        && root.getKind() == IPackageFragmentRoot.K_SOURCE) {
                     results.add(root.getCorrespondingResource());
                 }
             }

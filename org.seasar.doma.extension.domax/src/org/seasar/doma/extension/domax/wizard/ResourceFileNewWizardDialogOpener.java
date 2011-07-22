@@ -29,9 +29,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.seasar.doma.extension.domax.Constants;
@@ -60,11 +58,7 @@ public abstract class ResourceFileNewWizardDialogOpener {
         this.typeName = type.getFullyQualifiedName();
         this.methodName = method.getElementName();
         this.shell = shell;
-        String sourceFolderPath = getSourceFolderPath();
-        if (sourceFolderPath == null) {
-            sourceFolderPath = findSourceFolderPath(javaProject, typeName);
-        }
-        this.sourceFolderPath = sourceFolderPath;
+        this.sourceFolderPath = findSourceFolderPath(javaProject, typeName);
     }
 
     protected String findSourceFolderPath(IJavaProject javaProject,
@@ -109,7 +103,6 @@ public abstract class ResourceFileNewWizardDialogOpener {
         if (dialog.open() == WizardDialog.OK) {
             IFile file = wizard.getNewFile();
             if (file != null) {
-                tryToSaveSourceFolderPath(file);
                 return file;
             }
         }
@@ -121,8 +114,8 @@ public abstract class ResourceFileNewWizardDialogOpener {
     protected IContainer createSqlFileContainer() {
         IProject project = javaProject.getProject();
         IPath sqlFolderPath = project.getFolder(sourceFolderPath)
-                .getProjectRelativePath().append(Constants.META_INF).append(
-                        typeName.replace(".", "/"));
+                .getProjectRelativePath().append(Constants.META_INF)
+                .append(typeName.replace(".", "/"));
         IFolder sqlFolder = project.getFolder(sqlFolderPath);
         if (sqlFolder.exists()) {
             return sqlFolder;
@@ -136,42 +129,4 @@ public abstract class ResourceFileNewWizardDialogOpener {
         return project;
     }
 
-    protected String getSourceFolderPath() {
-        IDialogSettings dialogSettings = Domax.getDefault().getDialogSettings();
-        IDialogSettings section = dialogSettings
-                .getSection(Constants.ResourceFileNewWizard.SECTION_NAME);
-        if (section == null) {
-            return null;
-        }
-        return section
-                .get(Constants.ResourceFileNewWizard.SOURCE_FOLDER_PATH_KEY);
-
-    }
-
-    protected void tryToSaveSourceFolderPath(IFile sqlFile) {
-        if (!this.javaProject.equals(JavaCore.create(sqlFile.getProject()))) {
-            return;
-        }
-        IPath sqlFilePath = sqlFile.getProjectRelativePath();
-        for (IResource sourceFolder : JavaProjectUtil
-                .getSourceFolders(javaProject)) {
-            IPath sourceFolderPath = sourceFolder.getProjectRelativePath();
-            if (sqlFilePath.isPrefixOf(sourceFolderPath)) {
-                saveSourceFolderPath(sourceFolderPath.toPortableString());
-                break;
-            }
-        }
-    }
-
-    protected void saveSourceFolderPath(String sourceFolderPath) {
-        IDialogSettings dialogSettings = Domax.getDefault().getDialogSettings();
-        IDialogSettings section = dialogSettings
-                .getSection(Constants.ResourceFileNewWizard.SECTION_NAME);
-        if (section == null) {
-            section = dialogSettings
-                    .addNewSection(Constants.ResourceFileNewWizard.SECTION_NAME);
-        }
-        section.put(Constants.ResourceFileNewWizard.SOURCE_FOLDER_PATH_KEY,
-                sourceFolderPath);
-    }
 }

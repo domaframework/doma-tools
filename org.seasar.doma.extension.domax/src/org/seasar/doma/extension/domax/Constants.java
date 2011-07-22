@@ -27,11 +27,4 @@ public final class Constants {
 
     public static final String SCRIPT_FILE_EXTESION = "script";
 
-    public static final class ResourceFileNewWizard {
-
-        public static final String SECTION_NAME = ResourceFileNewWizard.class
-                .getName();
-
-        public static final String SOURCE_FOLDER_PATH_KEY = "source_folder_path";
-    }
 }
