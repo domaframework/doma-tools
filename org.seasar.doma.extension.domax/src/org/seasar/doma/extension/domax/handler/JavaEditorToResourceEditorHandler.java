@@ -23,9 +23,11 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class JavaEditorToResourceEditorHandler extends
         AbstractToResourceEditorHandler {
@@ -33,11 +35,8 @@ public class JavaEditorToResourceEditorHandler extends
     public JavaEditorToResourceEditorHandler() {
     }
 
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        ISelection selection = HandlerUtil.getCurrentSelection(event);
-        if (selection == null) {
-            return null;
-        }
         IEditorPart editor = HandlerUtil.getActiveEditor(event);
         if (editor == null) {
             return null;
@@ -46,8 +45,7 @@ public class JavaEditorToResourceEditorHandler extends
         if (shell == null) {
             return null;
         }
-        IJavaElement selectedJavaElement = getSelectedJavaElement(selection,
-                editor);
+        IJavaElement selectedJavaElement = getSelectedJavaElement(editor);
         if (selectedJavaElement == null) {
             return null;
         }
@@ -55,8 +53,16 @@ public class JavaEditorToResourceEditorHandler extends
         return null;
     }
 
-    protected IJavaElement getSelectedJavaElement(ISelection selection,
-            IEditorPart editor) {
+    protected IJavaElement getSelectedJavaElement(IEditorPart editor) {
+        if (!(editor instanceof ITextEditor)) {
+            return null;
+        }
+        ITextEditor textEditor = (ITextEditor) editor;
+        ISelectionProvider provider = textEditor.getSelectionProvider();
+        if (provider == null) {
+            return null;
+        }
+        ISelection selection = provider.getSelection();
         if (!(selection instanceof ITextSelection)) {
             return null;
         }
