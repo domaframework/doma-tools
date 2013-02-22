@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.seasar.doma.extension.feature_1.27.0.201212300201.jar" id="org.seasar.doma.extension.feature" version="1.27.0.201212300201">
-      <category name="Doma"/>
-   </feature>
    <feature url="features/org.seasar.doma.extension.feature_1.27.1.201301051512.jar" id="org.seasar.doma.extension.feature" version="1.27.1.201301051512">
       <category name="Doma"/>
    </feature>
    <feature url="features/org.seasar.doma.extension.feature_1.28.0.201301271615.jar" id="org.seasar.doma.extension.feature" version="1.28.0.201301271615">
+      <category name="Doma"/>
+   </feature>
+   <feature url="features/org.seasar.doma.extension.feature_1.29.0.201302230629.jar" id="org.seasar.doma.extension.feature" version="1.29.0.201302230629">
       <category name="Doma"/>
    </feature>
    <category-def name="Doma" label="Doma"/>
