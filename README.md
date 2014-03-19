@@ -8,7 +8,7 @@ It enables navigation between Java files and SQL files.
 Update Site
 --------
 
-http://dl.bintray.com/nakamura-to/doma
+http://dl.bintray.com/domaframework/eclipse
 
 License
 -------
