@@ -1,2 +1,3 @@
 org.seasar.doma.extension.domax/bin
 *.jar
+/.idea/
